@@ -97,6 +97,8 @@ def get_t_score(a, b):
     '''
     #TODO: fill me in!
     t_score = (get_avg(a) - get_avg(b)) / get_standard_error(a, b)
+    if t_score > 0:
+        t_score = -t_score
     return t_score
 
 def perform_2_sample_t_test(a, b):
@@ -117,26 +119,26 @@ def perform_2_sample_t_test(a, b):
 
 # [OPTIONAL] Some helper functions that might be helpful in get_expected_grid().
 def row_sum(observed_grid, ele_row):
-    row_sum = 0
+    row_total = 0
     for num in observed_grid[ele_row]:
-        row_sum += num
-    return row_sum
+        row_total += num
+    return row_total
 
 def col_sum(observed_grid, ele_col):
-    col_sum = 0
+    col_total = 0
     for i in range(len(observed_grid)):
-        col_sum += observed_grid[i][ele_col]
-    return col_sum
+        col_total += observed_grid[i][ele_col]
+    return col_total
     
 def total_sum(observed_grid):
-    total_sum = 0
+    total = 0
     for row in observed_grid:
         for num in row:
-            total_sum += num
-    return total_sum
+            total += num
+    return total
 
 def calculate_expected(row_sum, col_sum, tot_sum):
-    expected = (row_sum*col_sum) / total_sum
+    expected = (row_sum * col_sum) / tot_sum
     return expected
 
 def get_expected_grid(observed_grid):
@@ -152,13 +154,12 @@ def get_expected_grid(observed_grid):
     for row in range(len(observed_grid)):
         expected_grid.append([0]*len(observed_grid[row]))
     
-    total_sum = total_sum(observed_grid)
-    
+    total = total_sum(observed_grid)
     for row in range(len(observed_grid)):
         for col in range(len(observed_grid[row])):
-            row_sum = row_sum(observed_grid, row)
-            col_sum = col_sum(observed_grid, col)
-            expected_grid[row][col] = get_expected_grid(row_sum, col_sum, total_sum)
+            row_total = row_sum(observed_grid, row)
+            col_total = col_sum(observed_grid, col)
+            expected_grid[row][col] = calculate_expected(row_total, col_total, total)
     return expected_grid
             
 
@@ -212,7 +213,7 @@ def data_to_num_list(s):
     '''
   return list(map(float, s.split()))
 
-"""
+
 # t_test 1:
 a_t1_list = data_to_num_list(a1) 
 b_t1_list = data_to_num_list(b1)
@@ -231,9 +232,9 @@ a_t3_list = data_to_num_list(a3)
 b_t3_list = data_to_num_list(b3)
 print(get_t_score(a_t3_list, b_t3_list)) # this should be -2.88969
 print(perform_2_sample_t_test(a_t3_list, b_t3_list)) # this should be .005091
-"""
 
-"""
+
+
 # chi2_test 1:
 a_c1_list = data_to_num_list(a_count_1) 
 b_c1_list = data_to_num_list(b_count_1)
@@ -255,6 +256,6 @@ b_c3_list = data_to_num_list(b_count_3)
 c3_observed_grid = [a_c3_list, b_c3_list]
 print(chi2_value(c3_observed_grid)) # this should be .3119402
 print(perform_chi2_homogeneity_test(c3_observed_grid)) # this should be .57649202
-"""
+
 
 
